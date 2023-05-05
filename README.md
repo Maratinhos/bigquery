@@ -26,3 +26,21 @@ select date_trunc(date(creation_time), month)                               as m
 group by month
 order by month;
 ```
+
+### 3. Searching something in views and stored procedures
+```sql
+select table_catalog || '.' || table_schema || '.' || table_name as object, 
+       table_type                                                as type, 
+       ddl                                                       as definition
+  from `region-europe-north1`.INFORMATION_SCHEMA.TABLES
+ where table_type = 'VIEW'
+   and lower(ddl) like '%table.column%'
+
+union all
+
+select routine_catalog || '.' || routine_schema || '.' || routine_name as object, 
+       routine_type                                                    as type, 
+       ddl                                                             as definition, 
+  from `region-europe-north1`.INFORMATION_SCHEMA.ROUTINES
+ where lower(ddl) like '%table.column%'
+```
