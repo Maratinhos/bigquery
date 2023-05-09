@@ -49,3 +49,27 @@ select routine_catalog || '.' || routine_schema || '.' || routine_name as object
 ```sql
 select date_trunc(current_date('Europe/Moscow'), week(monday)) as week_monday
 ```
+
+### 5. Get the MIN value from the 3 previous rows
+```sql
+with table_name as (
+select '2023-05-01' as date, 10 as price, 'g001' as group_name union all
+select '2023-05-02' as date, 12 as price, 'g001' as group_name union all
+select '2023-05-03' as date,  9 as price, 'g001' as group_name union all
+select '2023-05-04' as date, 11 as price, 'g001' as group_name union all
+select '2023-05-05' as date, 12 as price, 'g001' as group_name
+)
+select t.date,
+       t.price,
+       t.group_name,
+       min(t.price) over(partition by t.group_name order by t.date desc rows between 3 preceding and 1 preceding) as prev3_min_price,
+  from table_name t
+```
+
+| Row |    date    | price | group_name | prev3_min_price |
+| --- | ---------- | ----- | ---------- | --------------- |
+|   1 | 2023-05-05 |    12 | g001       |            null |
+|   2 | 2023-05-04 |    11 | g001       |              12 |
+|   3 | 2023-05-03 |     9 | g001       |              11 |
+|   4 | 2023-05-02 |    12 | g001       |               9 |
+|   5 | 2023-05-01 |    10 | g001       |               9 |
