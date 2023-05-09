@@ -44,3 +44,8 @@ select routine_catalog || '.' || routine_schema || '.' || routine_name as object
   from `region-europe-north1`.INFORMATION_SCHEMA.ROUTINES
  where lower(ddl) like '%table.column%'
 ```
+
+### 4. Get the Monday date of the current week
+```sql
+select date_trunc(current_date('Europe/Moscow'), week(monday)) as week_monday
+```
