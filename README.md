@@ -11,9 +11,7 @@ Import CSV-file from Cloud Storage to BigQuery
 bq load --autodetect --source_format=CSV --max_bad_records=100 bq-dataset.bq-table-name gs://folder/file.csv id:STRING,created_at:TIMESTAMP
 ```
 
-
 > It works slowly. I prefer the external connection.
-
 
 ### 2. Monthly expense statistics
 ```sql
@@ -73,3 +71,9 @@ select t.date,
 | 3 | 2023-05-03 | 9 | g001 | 11 |
 | 4 | 2023-05-02 | 12 | g001 | 9 |
 | 5 | 2023-05-01 | 10 | g001 | 9 |
+
+### 6. Copy tables between datasets in different locations
+```
+bq mk --transfer_config --project_id=long-perception-XXXXXX --data_source=cross_region_copy --target_dataset=dataset-name-eu --display_name='dataset US to EU' --params='{"source_dataset_id":"dataset-name-us","source_project_id":"long-perception-XXXXXX","overwrite_destination_table":"true"}'
+```
+> Or you can use Data transfer UI.
