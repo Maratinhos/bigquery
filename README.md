@@ -76,11 +76,11 @@ select t.date,
 ```
 bq mk --transfer_config --project_id=long-perception-XXXXXX --data_source=cross_region_copy --target_dataset=dataset-name-eu --display_name='dataset US to EU' --params='{"source_dataset_id":"dataset-name-us","source_project_id":"long-perception-XXXXXX","overwrite_destination_table":"true"}'
 ```
-> Or you can use Data transfer UI.
+> Or you can use Data Transfer UI.
 
 ### 7. External connection (you can query data in Cloud SQL from BigQuery)
 ```
-bq mk --connection --connection_type='CLOUD_SQL' --connection_credential='{"username":"bq_reader", "password":"bq_reader_password"}' --properties='{"instanceId":"long-perception-XXXXXX:europe-north1:postgres","database":"clou-sql-db-name","type":"POSTGRES"}' --project_id=long-perception-XXXXXX --location=europe-north1 external-connection-name
+bq mk --connection --connection_type='CLOUD_SQL' --connection_credential='{"username":"bq_reader", "password":"bq_reader_password"}' --properties='{"instanceId":"long-perception-XXXXXX:europe-north1:postgres","database":"cloud-sql-db-name","type":"POSTGRES"}' --project_id=long-perception-XXXXXX --location=europe-north1 external-connection-name
 ```
 
 ```sql
@@ -93,4 +93,16 @@ select t.id, t.name
       from public.table_name
     '''
   ) t
+```
+
+### 8. Get Scheduled queries
+```
+bq ls --transfer_config --transfer_location=europe-north1 --format=csv
+```
+You can save csv to Cloud Storage and then load to BigQuery:
+```sql
+load data overwrite `long-perception-XXXXXX.dataset_name.scheduled_query_YYYYMMDD`
+from files (
+  format = 'CSV',
+  uris = ['gs://bucket_name/scheduled_query/scheduled_query_YYYYMMDD.csv']);
 ```
