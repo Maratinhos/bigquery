@@ -106,3 +106,18 @@ from files (
   format = 'CSV',
   uris = ['gs://bucket_name/scheduled_query/scheduled_query_YYYYMMDD.csv']);
 ```
+
+### 9. Split text into words. And get the words offset.
+```sql
+select text, word, word_offset
+  from `long-perception-XXXXXX.dataset_name.table_name` a
+  cross join unnest(split(text, ' ')) as word with offset word_offset
+```
+
+| text | word | word_offset |
+| --- | --- | ---: |
+| qwe rty asd | qwe | 0 |
+| qwe rty asd | rty | 1 |
+| qwe rty asd | asd | 2 |
+| zxc vbn | zxc | 0 |
+| zxc vbn | vbn | 1 |
