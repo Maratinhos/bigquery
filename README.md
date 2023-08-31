@@ -1,6 +1,6 @@
 # GCP BigQuery Examples
 
-### 1. CloudSQL to BigQuery
+### 1. CloudSQL to BigQuery.
 Export from Google CloudSQL CSV-file to Cloud Storage
 ```
 gcloud sql export csv cloud-sql-instance-name gs://folder/file.csv --database=cloud-sql-db-name --offload --query="select id::text, created_at from cloud-sql-table-name"
@@ -13,7 +13,7 @@ bq load --autodetect --source_format=CSV --max_bad_records=100 bq-dataset.bq-tab
 
 > It works slowly. I prefer the external connection.
 
-### 2. Monthly expense statistics
+### 2. Monthly expense statistics.
 ```sql
 select date_trunc(date(creation_time), month)                               as month,
        count(job_id)                                                        as jobs,
@@ -25,7 +25,7 @@ group by month
 order by month;
 ```
 
-### 3. Searching something in views and stored procedures
+### 3. Searching something in views and stored procedures.
 ```sql
 select table_catalog || '.' || table_schema || '.' || table_name as object, 
        table_type                                                as type, 
@@ -43,12 +43,12 @@ select routine_catalog || '.' || routine_schema || '.' || routine_name as object
  where lower(ddl) like '%table.column%'
 ```
 
-### 4. Get the Monday date of the current week
+### 4. Get the Monday date of the current week.
 ```sql
 select date_trunc(current_date('Europe/Moscow'), week(monday)) as week_monday
 ```
 
-### 5. Get the MIN value from the 3 previous rows
+### 5. Get the MIN value from the 3 previous rows.
 ```sql
 with table_name as (
 select '2023-05-01' as date, 10 as price, 'g001' as group_name union all
@@ -78,7 +78,7 @@ bq mk --transfer_config --project_id=long-perception-XXXXXX --data_source=cross_
 ```
 > Or you can use Data Transfer UI.
 
-### 7. External connection (you can query data in Cloud SQL from BigQuery)
+### 7. External connection (you can query data in Cloud SQL from BigQuery).
 ```
 bq mk --connection --connection_type='CLOUD_SQL' --connection_credential='{"username":"bq_reader", "password":"bq_reader_password"}' --properties='{"instanceId":"long-perception-XXXXXX:europe-north1:postgres","database":"cloud-sql-db-name","type":"POSTGRES"}' --project_id=long-perception-XXXXXX --location=europe-north1 external-connection-name
 ```
@@ -95,7 +95,7 @@ select t.id, t.name
   ) t
 ```
 
-### 8. Get Scheduled queries
+### 8. Get Scheduled queries.
 ```
 bq ls --transfer_config --transfer_location=europe-north1 --format=csv
 ```
@@ -121,3 +121,10 @@ select text, word, word_offset
 | qwe rty asd | asd | 2 |
 | zxc vbn | zxc | 0 |
 | zxc vbn | vbn | 1 |
+
+### 10. Get data from the past (Time travel).
+```sql
+select *
+  from `long-perception-XXXXXX.dataset_name.table_name`
+for system_time as timestamp_sub(current_timestamp(), interval 10 hour)
+```
