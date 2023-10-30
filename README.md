@@ -126,5 +126,5 @@ select text, word, word_offset
 ```sql
 select *
   from `long-perception-XXXXXX.dataset_name.table_name`
-for system_time as timestamp_sub(current_timestamp(), interval 10 hour)
+for system_time as of timestamp_sub(current_timestamp(), interval 10 hour)
 ```
