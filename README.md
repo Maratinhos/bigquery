@@ -15,12 +15,13 @@ bq load --autodetect --source_format=CSV --max_bad_records=100 bq-dataset.bq-tab
 
 ### 2. Monthly expense statistics.
 ```sql
-select date_trunc(date(creation_time), month)                               as month,
-       count(job_id)                                                        as jobs,
-       round(sum(total_bytes_billed) / (1024 * 1024 * 1024 * 1024), 0)      as billed_TB,
-       round(sum(total_bytes_billed) / (1024 * 1024 * 1024 * 1024), 0) * 5  as sum_dollars
+select date_trunc(date(creation_time), month)                                as month,
+       count(job_id)                                                         as jobs,
+       round(sum(total_bytes_billed) / (1024 * 1024 * 1024 * 1024), 0)       as billed_TB,
+       round(sum(total_bytes_billed) / (1024 * 1024 * 1024 * 1024), 0) * 7.5 as sum_dollars
   from `region-europe-north1`.INFORMATION_SCHEMA.JOBS_BY_PROJECT 
  where project_id = 'long-perception-XXXXXX'
+   and parent_job_id is null
 group by month
 order by month;
 ```
