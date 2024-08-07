@@ -1,6 +1,20 @@
 # GCP BigQuery Examples
 
-### 1. CloudSQL to BigQuery.
+# Table of contents
+1. [CloudSQL to BigQuery](#header_01)
+2. [Monthly expense statistics](#header_02)
+3. [Searching something in views and stored procedures](#header_03)
+4. [Get the Monday date of the current week](#header_04)
+5. [Get the MIN value from the 3 previous rows](#header_05)
+6. [Copy tables between datasets in different locations](#header_06)
+7. [External connection (you can query data in Cloud SQL from BigQuery)](#header_07)
+8. [Get Scheduled queries](#header_08)
+9. [Split text into words. And get the words offset](#header_09)
+10. [Get data from the past (Time travel)](#header_10)
+11. [Filter the results of window function](#header_11)
+
+
+### 1. CloudSQL to BigQuery <a name="header_01"/>
 Export from Google CloudSQL CSV-file to Cloud Storage
 ```
 gcloud sql export csv cloud-sql-instance-name gs://folder/file.csv --database=cloud-sql-db-name --offload --query="select id::text, created_at from cloud-sql-table-name"
@@ -13,7 +27,7 @@ bq load --autodetect --source_format=CSV --max_bad_records=100 bq-dataset.bq-tab
 
 > It works slowly. I prefer the external connection.
 
-### 2. Monthly expense statistics.
+### 2. Monthly expense statistics <a name="header_02"/>
 ```sql
 select date_trunc(date(creation_time), month)                                as month,
        count(job_id)                                                         as jobs,
@@ -26,7 +40,7 @@ group by month
 order by month;
 ```
 
-### 3. Searching something in views and stored procedures.
+### 3. Searching something in views and stored procedures <a name="header_03"/>
 ```sql
 select table_catalog || '.' || table_schema || '.' || table_name as object, 
        table_type                                                as type, 
@@ -44,12 +58,12 @@ select routine_catalog || '.' || routine_schema || '.' || routine_name as object
  where lower(ddl) like '%table.column%'
 ```
 
-### 4. Get the Monday date of the current week.
+### 4. Get the Monday date of the current week <a name="header_04"/>
 ```sql
 select date_trunc(current_date('Europe/Moscow'), week(monday)) as week_monday
 ```
 
-### 5. Get the MIN value from the 3 previous rows.
+### 5. Get the MIN value from the 3 previous rows <a name="header_05"/>
 ```sql
 with table_name as (
 select '2023-05-01' as date, 10 as price, 'g001' as group_name union all
@@ -73,13 +87,13 @@ select t.date,
 | 4 | 2023-05-02 | 12 | g001 | 9 |
 | 5 | 2023-05-01 | 10 | g001 | 9 |
 
-### 6. Copy tables between datasets in different locations
+### 6. Copy tables between datasets in different locations <a name="header_06"/>
 ```
 bq mk --transfer_config --project_id=long-perception-XXXXXX --data_source=cross_region_copy --target_dataset=dataset-name-eu --display_name='dataset US to EU' --params='{"source_dataset_id":"dataset-name-us","source_project_id":"long-perception-XXXXXX","overwrite_destination_table":"true"}'
 ```
 > Or you can use Data Transfer UI.
 
-### 7. External connection (you can query data in Cloud SQL from BigQuery).
+### 7. External connection (you can query data in Cloud SQL from BigQuery) <a name="header_07"/>
 ```
 bq mk --connection --connection_type='CLOUD_SQL' --connection_credential='{"username":"bq_reader", "password":"bq_reader_password"}' --properties='{"instanceId":"long-perception-XXXXXX:europe-north1:postgres","database":"cloud-sql-db-name","type":"POSTGRES"}' --project_id=long-perception-XXXXXX --location=europe-north1 external-connection-name
 ```
@@ -96,7 +110,7 @@ select t.id, t.name
   ) t
 ```
 
-### 8. Get Scheduled queries.
+### 8. Get Scheduled queries <a name="header_08"/>
 ```
 bq ls --transfer_config --transfer_location=europe-north1 --format=csv
 ```
@@ -108,7 +122,7 @@ from files (
   uris = ['gs://bucket_name/scheduled_query/scheduled_query_YYYYMMDD.csv']);
 ```
 
-### 9. Split text into words. And get the words offset.
+### 9. Split text into words. And get the words offset <a name="header_09"/>
 ```sql
 select text, word, word_offset
   from `long-perception-XXXXXX.dataset_name.table_name` a
@@ -123,14 +137,14 @@ select text, word, word_offset
 | zxc vbn | zxc | 0 |
 | zxc vbn | vbn | 1 |
 
-### 10. Get data from the past (Time travel).
+### 10. Get data from the past (Time travel) <a name="header_10"/>
 ```sql
 select *
   from `long-perception-XXXXXX.dataset_name.table_name`
 for system_time as of timestamp_sub(current_timestamp(), interval 10 hour)
 ```
 
-### 11. Filter the results of window function (QUALIFY).
+### 11. Filter the results of window function (QUALIFY) <a name="header_11"/>
 ```sql
 select id,
        name,
