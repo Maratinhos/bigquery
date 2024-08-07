@@ -129,3 +129,12 @@ select *
   from `long-perception-XXXXXX.dataset_name.table_name`
 for system_time as of timestamp_sub(current_timestamp(), interval 10 hour)
 ```
+
+### 11. Filter the results of window function (QUALIFY).
+```sql
+select id,
+       name,
+       date
+  from table_name
+qualify row_number() over(partition by name order by date desc) = 1
+```
