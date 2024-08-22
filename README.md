@@ -12,6 +12,7 @@
 9. [Split text into words. And get the words offset](#header_09)
 10. [Get data from the past (Time travel)](#header_10)
 11. [Filter the results of window function](#header_11)
+12. [Loading data from Excel files into BigQuery](#header_12)
 
 
 ### 1. CloudSQL to BigQuery <a name="header_01"/>
@@ -152,3 +153,6 @@ select id,
   from table_name
 qualify row_number() over(partition by name order by date desc) = 1
 ```
+
+### 12. Loading data from Excel files into BigQuery <a name="header_12"/>
+Python script => from_excel_to_bigquery.py [from_excel_to_bigquery.py](from_excel_to_bigquery.py)
