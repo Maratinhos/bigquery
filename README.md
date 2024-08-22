@@ -155,4 +155,4 @@ qualify row_number() over(partition by name order by date desc) = 1
 ```
 
 ### 12. Loading data from Excel files into BigQuery <a name="header_12"/>
-Python script => from_excel_to_bigquery.py [from_excel_to_bigquery.py](from_excel_to_bigquery.py)
+Python script => [from_excel_to_bigquery.py](from_excel_to_bigquery.py)
