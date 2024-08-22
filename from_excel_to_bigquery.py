@@ -1,5 +1,5 @@
 import os
-import pandas as pd
+import pandas
 import pandas_gbq
 from google.oauth2 import service_account
 
@@ -19,7 +19,7 @@ for file in files:
     file_path = f'{source_folder}/{file}'
     table_id = f'{dataset_id}.{file_name}'
 
-    df = pd.read_excel(file_path, sheet_name=sheet_name, dtype=str) # dtype=str все ячейки будут как текст считаны, иначе надо перечислять converters={'names':str,'ages':str}
+    df = pandas.read_excel(file_path, sheet_name=sheet_name, dtype=str) # dtype=str все ячейки будут как текст считаны, иначе надо перечислять converters={'names':str,'ages':str}
     pandas_gbq.to_gbq(df, table_id, project_id=project_id, credentials=credentials, if_exists='replace')
     
     print(file_path, table_id)
